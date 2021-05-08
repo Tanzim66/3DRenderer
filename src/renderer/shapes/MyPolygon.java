@@ -4,6 +4,10 @@ import java.awt.*;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
+import java.util.Comparator;
 import renderer.point.MyPoint;
 import renderer.point.PointConverter;
 
@@ -51,5 +55,31 @@ public class MyPolygon {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public double getAverageX() {
+        double sum = 0;
+        for (MyPoint p : this.points) {
+            sum += p.x;
+        }
+        return sum / this.points.length;
+    }
+
+    public static MyPolygon[] sortPolygons(MyPolygon[] polygons) {
+        List<MyPolygon> polygonsList = new ArrayList<MyPolygon>();
+        for (MyPolygon poly : polygons) {
+            polygonsList.add(poly);
+        }
+        Collections.sort(polygonsList, new Comparator<MyPolygon>() {
+            @Override
+            public int compare(MyPolygon p1, MyPolygon p2) {
+                return p2.getAverageX() - p1.getAverageX() < 0 ? 1 : -1;
+            }
+        });
+
+        for (int i = 0; i < polygons.length; i++) {
+            polygons[i] = polygonsList.get(i);
+        }
+        return polygons;
     }
 }

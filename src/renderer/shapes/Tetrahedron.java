@@ -31,7 +31,7 @@ public class Tetrahedron {
     }
 
     private void sortPolygons() {
-        // Write this later
+        MyPolygon.sortPolygons(polygons);
     }
 
     private void setPolygonColor() {
