@@ -5,7 +5,17 @@ import renderer.Display;
 
 public class PointConverter {
 
-    private static double scale = 1;
+    public static double scale = 1;
+
+    public static final double zoomFactor = 1.2;
+
+    public static void zoomIn() {
+        scale *= zoomFactor;
+    }
+
+    public static void zoomOut() {
+        scale /= zoomFactor;
+    }
 
     public static Point convertPoint(MyPoint point3D) {
         double x3d = point3D.y * scale;

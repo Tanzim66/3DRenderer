@@ -6,7 +6,10 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import javax.swing.JFrame;
+import renderer.input.ClickType;
+import renderer.input.Mouse;
 import renderer.point.MyPoint;
+import renderer.point.PointConverter;
 import renderer.shapes.MyPolygon;
 import renderer.shapes.Tetrahedron;
 
@@ -29,10 +32,16 @@ public class Display extends Canvas implements Runnable {
 
     private Tetrahedron tetra;
 
+    private Mouse mouse;
+
     public Display() {
         this.frame = new JFrame(); // initialize JFrame
         Dimension size = new Dimension(Display.WIDTH, Display.LENGTH);
         this.setPreferredSize(size); // inherited from the Canvas class
+        this.mouse = new Mouse();
+        this.addMouseListener(this.mouse);
+        this.addMouseMotionListener(this.mouse);
+        this.addMouseWheelListener(this.mouse);
     }
 
     public static void main(String[] args) {
@@ -143,8 +152,31 @@ public class Display extends Canvas implements Runnable {
 
     }
 
+    int initialX, initialY;
+    ClickType prevMouse = ClickType.unknown;
+
     private void update() {
-        this.tetra.rotate(true, 2, 1, 3);
+        int x = this.mouse.getX();
+        int y = this.mouse.getY();
+        if (this.mouse.getB() == ClickType.leftClick) {
+            int xDif = x - initialX;
+            int yDif = y - initialY;
+            this.tetra.rotate(true, 0, -yDif / 2.5, xDif / 2.5);
+        } else if (this.mouse.getB() == ClickType.rightClick) {
+            int xDif = x - initialX;
+            this.tetra.rotate(true, -xDif / 2.5, 0, 0);
+        }
+
+        if (this.mouse.isScrollingUp()) {
+            PointConverter.zoomIn();
+        } else if (this.mouse.isScrollingDown()) {
+            PointConverter.zoomOut();
+        }
+
+        this.mouse.resetScroll();
+
+        initialX = x;
+        initialY = y;
     }
 
 }
