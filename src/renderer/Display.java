@@ -6,12 +6,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import javax.swing.JFrame;
-import renderer.input.ClickType;
+import renderer.entity.EntityManager;
 import renderer.input.Mouse;
-import renderer.point.MyPoint;
-import renderer.point.PointConverter;
-import renderer.shapes.MyPolygon;
-import renderer.shapes.Tetrahedron;
 
 public class Display extends Canvas implements Runnable {
     // inherits all the methods from Canvas and we implement Runnable
@@ -30,7 +26,7 @@ public class Display extends Canvas implements Runnable {
     public static final int LENGTH = 600;
     private static boolean running = false;
 
-    private Tetrahedron tetra;
+    private EntityManager eMan;
 
     private Mouse mouse;
 
@@ -42,6 +38,7 @@ public class Display extends Canvas implements Runnable {
         this.addMouseListener(this.mouse);
         this.addMouseMotionListener(this.mouse);
         this.addMouseWheelListener(this.mouse);
+        this.eMan = new EntityManager();
     }
 
     public static void main(String[] args) {
@@ -84,7 +81,7 @@ public class Display extends Canvas implements Runnable {
         double delta = 0; // percent progress towards the next update
         int frames = 0;
 
-        init();
+        this.eMan.init();
 
         while (running) {
             long now = System.nanoTime();
@@ -111,26 +108,6 @@ public class Display extends Canvas implements Runnable {
 
     }
 
-    private void init() {
-        int s = 100;
-        MyPoint p1 = new MyPoint(s / 2, -s / 2, -s / 2);
-        MyPoint p2 = new MyPoint(s / 2, s / 2, -s / 2);
-        MyPoint p3 = new MyPoint(s / 2, s / 2, s / 2);
-        MyPoint p4 = new MyPoint(s / 2, -s / 2, s / 2);
-
-        MyPoint p5 = new MyPoint(-s / 2, -s / 2, -s / 2);
-        MyPoint p6 = new MyPoint(-s / 2, s / 2, -s / 2);
-        MyPoint p7 = new MyPoint(-s / 2, s / 2, s / 2);
-        MyPoint p8 = new MyPoint(-s / 2, -s / 2, s / 2);
-        this.tetra = new Tetrahedron(new MyPolygon(Color.RED, p1, p2, p3, p4),
-                new MyPolygon(Color.blue, p5, p6, p7, p8),
-                new MyPolygon(Color.GREEN, p1, p2, p6, p5),
-                new MyPolygon(Color.pink, p1, p5, p8, p4),
-                new MyPolygon(Color.WHITE, p2, p6, p7, p3),
-                new MyPolygon(Color.YELLOW, p4, p3, p7, p8));
-
-    }
-
     private void render() {
 
         BufferStrategy bs = this.getBufferStrategy(); // organizes memory for media output
@@ -144,7 +121,7 @@ public class Display extends Canvas implements Runnable {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, WIDTH * 2, LENGTH * 2);
 
-        tetra.render(g);
+        this.eMan.render(g);
 
         g.dispose();
         bs.show();
@@ -152,31 +129,8 @@ public class Display extends Canvas implements Runnable {
 
     }
 
-    int initialX, initialY;
-    ClickType prevMouse = ClickType.unknown;
-
     private void update() {
-        int x = this.mouse.getX();
-        int y = this.mouse.getY();
-        if (this.mouse.getB() == ClickType.leftClick) {
-            int xDif = x - initialX;
-            int yDif = y - initialY;
-            this.tetra.rotate(true, 0, -yDif / 2.5, xDif / 2.5);
-        } else if (this.mouse.getB() == ClickType.rightClick) {
-            int xDif = x - initialX;
-            this.tetra.rotate(true, -xDif / 2.5, 0, 0);
-        }
-
-        if (this.mouse.isScrollingUp()) {
-            PointConverter.zoomIn();
-        } else if (this.mouse.isScrollingDown()) {
-            PointConverter.zoomOut();
-        }
-
-        this.mouse.resetScroll();
-
-        initialX = x;
-        initialY = y;
+        this.eMan.update(this.mouse);
     }
 
 }
