@@ -20,7 +20,7 @@ public class EntityManager {
     }
 
     public void init() {
-        this.entities.add(BasicEntityBuilder.createCube(100, 0, 0, 0));
+        this.entities.add(BasicEntityBuilder.createDiamond(Color.BLUE, 100, 0, 0, 0));
     }
 
     public void update(Mouse mouse) {

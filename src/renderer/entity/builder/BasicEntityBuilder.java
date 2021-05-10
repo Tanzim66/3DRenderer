@@ -33,8 +33,39 @@ public class BasicEntityBuilder {
         return new Entity(t);
     }
 
-    // public static IEntity createDiamond(double size, double centerX, double centerY,
-    // double centerZ) {
-
-    // }
+    public static IEntity createDiamond(Color color, double size, double centerX, double centerY,
+     double centerZ) {
+    	List<Tetrahedron> tetras = new ArrayList<Tetrahedron>();
+    	
+    	int edges = 10;
+    	double inFactor = 0.8;
+    	
+    	MyPoint bottom = new MyPoint(centerX, centerY, centerZ - size/2);
+    	MyPoint[] outerPoints = new MyPoint[edges];
+    	MyPoint[] innerPoints = new MyPoint[edges];
+    	
+    	for(int i=0; i<edges; i++) {
+    		double theta = 2*Math.PI/edges * i;
+    		double xPos = -Math.sin(theta) * size/2;
+    		double yPos = Math.cos(theta) * size/2;
+    		double zPos = size/2;
+    		
+    		outerPoints[i] = new MyPoint(centerX + xPos, centerY + yPos, centerZ + zPos);
+    		innerPoints[i] = new MyPoint(centerX + xPos * inFactor, centerY + yPos * inFactor, centerZ + zPos / inFactor);
+    	}
+    	
+    	MyPolygon polygons[] = new MyPolygon[2 * edges + 1];
+    	for(int i=0; i<edges; i++) {
+    		polygons[i] = new MyPolygon(outerPoints[i], bottom, outerPoints[(i+1)%edges]);
+    	}
+    	for(int i=0; i<edges; i++) {
+    		polygons[i + edges] = new MyPolygon(outerPoints[i], outerPoints[(i+1)%edges], innerPoints[(i+1)%edges], innerPoints[i]);
+    	}
+    	polygons[edges * 2] = new MyPolygon(innerPoints);
+    	
+    	Tetrahedron tetra = new Tetrahedron(color, true, polygons);
+    	tetras.add(tetra);
+    	
+    	return new Entity(tetras);
+    }
 }
