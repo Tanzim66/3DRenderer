@@ -36,6 +36,10 @@ public class Tetrahedron {
         }
         this.sortPolygons();
     }
+    
+    public MyPolygon[] getPolygon(){
+    	return this.polygons;
+    }
 
     private void sortPolygons() {
         MyPolygon.sortPolygons(polygons);

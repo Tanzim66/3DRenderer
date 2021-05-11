@@ -73,7 +73,13 @@ public class MyPolygon {
         Collections.sort(polygonsList, new Comparator<MyPolygon>() {
             @Override
             public int compare(MyPolygon p1, MyPolygon p2) {
-                return p2.getAverageX() - p1.getAverageX() < 0 ? 1 : -1;
+            	double p1AvgX = p1.getAverageX();
+            	double p2AvgX = p2.getAverageX();
+            	double diff = p2AvgX - p1AvgX;
+            	if(diff == 0)
+            		return 0;
+            	
+                return diff < 0 ? 1 : -1;
             }
         });
 
