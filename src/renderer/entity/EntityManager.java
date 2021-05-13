@@ -2,7 +2,7 @@ package renderer.entity;
 
 import java.util.ArrayList;
 import java.util.List;
-import renderer.entity.builder.BasicEntityBuilder;
+//import renderer.entity.builder.BasicEntityBuilder;
 import renderer.entity.builder.ComplexEntityBuilder;
 import renderer.input.ClickType;
 import renderer.input.Mouse;
